@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Emotion Aware Study Companion</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Segoe UI;
+background:linear-gradient(135deg,#6dd5ed,#2193b0);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:0;
+}
+
+.container{
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(10px);
+padding:40px;
+border-radius:20px;
+width:420px;
+text-align:center;
+color:white;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+textarea{
+width:90%;
+height:120px;
+border-radius:10px;
+border:none;
+padding:10px;
+font-size:16px;
+}
+
+.result{
+margin-top:15px;
+font-size:20px;
+font-weight:bold;
+}
+
+.warning{
+color:yellow;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>📚 Emotion Aware Study Companion</h2>
+
+<p>Start typing your study notes below</p>
+
+<textarea id="typingBox" placeholder="Start typing here..."></textarea>
+
+<div class="result" id="emotionResult">😊 Emotion: Waiting for typing...</div>
+
+<div class="warning" id="warning"></div>
+
+<canvas id="emotionChart"></canvas>
+
+</div>
+
+<script>
+
+let typingSpeed = 0
+let backspaceCount = 0
+let lastTime = Date.now()
+
+let ctx = document.getElementById("emotionChart").getContext("2d")
+
+let chart = new Chart(ctx,{
+type:"line",
+data:{
+labels:[],
+datasets:[{
+label:"Focus Level",
+data:[],
+borderWidth:2
+}]
+},
+options:{
+scales:{
+y:{beginAtZero:true,max:100}
+}
+}
+})
+
+let box = document.getElementById("typingBox")
+
+box.addEventListener("keydown",function(e){
+
+let now = Date.now()
+let diff = (now-lastTime)/1000
+lastTime = now
+
+typingSpeed++
+
+if(e.key==="Backspace"){
+backspaceCount++
+}
+
+let emotion = ""
+let focusLevel = 0
+
+if(typingSpeed > 10 && diff < 2){
+emotion="😊 Focused"
+focusLevel=90
+}
+
+else if(diff > 5){
+emotion="😴 Tired"
+focusLevel=40
+}
+
+else{
+emotion="😣 Stressed"
+focusLevel=60
+}
+
+document.getElementById("emotionResult").innerText =
+"Emotion: " + emotion
+
+if(diff > 8){
+document.getElementById("warning").innerText =
+"⚠ You might be distracted by social media!"
+}
+else{
+document.getElementById("warning").innerText=""
+}
+
+chart.data.labels.push("")
+chart.data.datasets[0].data.push(focusLevel)
+chart.update()
+
+})
+
+</script>
+
+</body>
+</html>
