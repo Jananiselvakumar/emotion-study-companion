@@ -56,3 +56,6 @@ The objective of this project is to support students in maintaining better focus
 ## 🚀 How to Run the Project
 
 1. Clone the repository
+
+👩‍💻 Developed By
+Janani S
